@@ -49,8 +49,9 @@ const usersTyping = ref<User[]>([]);
 
 async function handleNewMessage(message: Message) {
   messages.value.push(message)
+  const isIncludes = usersTyping.value.find(user => user.id === bot.value.id)
+  if (isIncludes) return
   usersTyping.value.push(bot.value)
-  usersTyping.value.push({id: '1', name: 'Mahmut', avatar: ''})
 
   setTimeout(() => {
     usersTyping.value = []

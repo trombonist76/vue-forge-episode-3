@@ -26,7 +26,7 @@ const emits = defineEmits<{
 
 const isOpen = ref<boolean>(false) 
 const newMessage = ref<string>('')
-const chatBoxContainer = ref<ChatBoxContainer | null>(null)
+const chatBoxContainer = ref()
 const toggleShow = () => {
   isOpen.value = true
 }
@@ -60,12 +60,15 @@ const typingUser = computed(() => {
   return typings
 })
 
-watch(() => props.messages.length, async () => {
-  if (chatBoxContainer.value === null) return
-  await nextTick()
-  const container = chatBoxContainer.value
-  container.scrollTop = container.scrollHeight
-})
+watch(
+  () => props.messages,
+  () => {
+    nextTick(
+      () => (chatBoxContainer.value.scrollTop = chatBoxContainer.value.scrollHeight)
+    );
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -87,9 +90,16 @@ watch(() => props.messages.length, async () => {
         ref="chatBoxContainer">
         <chat-bubble
           v-for="message in messages"
+          :key="message.id"
           :message="message"
           :user="findUserById(message.userId)"
           :isMe="checkIsMe(message.userId)"
+        ></chat-bubble>
+        <chat-bubble
+          v-for="user in usersTyping"
+          :key="user.id"
+          :user="user"
+          :isMe="checkIsMe(user.id)"
         ></chat-bubble>
         <div class="mt-4 sticky bottom-0 left-0 w-full bg-slate-700">
           <input 
