@@ -5,15 +5,15 @@ import { Message, User } from "~~/types";
 const me = ref<User>({
   id: "user",
   avatar: "/avatar.jpg",
-  name: "You",
+  name: "You"
 });
 const bot = ref<User>({
   id: "assistant",
   avatar: "/bot.jpg",
-  name: "Botman",
+  name: "Botman"
 });
 
-const users = computed(() => [me.value, bot.value]);
+const users = computed<User[]>(() => [me.value, bot.value]);
 
 const messages = ref<Message[]>([
   {
@@ -48,10 +48,12 @@ const usersTyping = ref<User[]>([]);
 // and in the empty function below
 
 async function handleNewMessage(message: Message) {
-  messages.value.push(message);
-  usersTyping.value.push(bot.value);
+  messages.value.push(message)
+  usersTyping.value.push(bot.value)
+  usersTyping.value.push({id: '1', name: 'Mahmut', avatar: ''})
+
   setTimeout(() => {
-    usersTyping.value = [];
+    usersTyping.value = []
     messages.value.push({
       id: nanoid(),
       createdAt: new Date(),
@@ -59,6 +61,7 @@ async function handleNewMessage(message: Message) {
       userId: "assistant",
     });
   }, 3000);
+
 }
 </script>
 <template>
